@@ -19,7 +19,6 @@ def simplify_text(text):
         model="gemini-1.5-flash",
         contents=prompt
     )
-    # Make sure to return the correct text field
     return getattr(response, "text", getattr(response, "output_text", "Error: no text returned"))
 
 
@@ -31,7 +30,7 @@ st.markdown("""
     <style>
     /* Background */
     .stApp {
-        background-color: #000000;  /* whole background black */
+        background-color: #000000;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
@@ -39,7 +38,7 @@ st.markdown("""
     .title {
         font-size: 48px;
         font-weight: 300;
-        color: #fffbe6;  /* off-white font */
+        color: #fffbe6;
         text-align: center;
         letter-spacing: 12px;
         text-transform: uppercase;
@@ -49,7 +48,7 @@ st.markdown("""
     /* Subtitle */
     .subtitle {
         font-size: 18px;
-        color: #aaaaaa;  /* subtle light gray for contrast */
+        color: #aaaaaa;
         text-align: center;
         margin-bottom: 30px;
     }
@@ -73,6 +72,8 @@ st.markdown("""
         padding: 10px 24px;
         font-size: 16px;
         border: 1px solid #333333;
+        cursor: pointer;
+        transition: all 0.2s ease;
     }
     div.stButton > button:first-child:hover {
         background-color: #333333;
@@ -83,9 +84,9 @@ st.markdown("""
     .stSuccess {
         border-left: 4px solid #f5d95e;
         padding: 10px 15px;
-        background-color: #111111;  /* dark box */
+        background-color: #111111;
         font-size: 16px;
-        color: #ffffff;  /* text white for readability */
+        color: #ffffff;
         border-radius: 6px;
     }
 
@@ -106,7 +107,8 @@ st.markdown('<div class="subtitle">Paste text below and simplify it instantly.</
 # ----- TEXT INPUT AREA -----
 user_text = st.text_area("", height=200)
 
-# ----- SIMPLIFY BUTTON -----
+# ----- SIMPLIFY BUTTON CENTERED -----
+st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
 if st.button("Simplify Text"):
     if user_text.strip() == "":
         st.warning("Please enter some text first.")
@@ -115,6 +117,7 @@ if st.button("Simplify Text"):
             simplified = simplify_text(user_text)
         st.subheader("Simplified Text")
         st.success(simplified)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ----- FOOTER -----
 st.markdown('<div class="footer">Made by Vihaan Kalia | Uses Gemini API</div>', unsafe_allow_html=True)
