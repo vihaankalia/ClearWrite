@@ -25,7 +25,7 @@ def simplify_text(text):
 # ---------------- STREAMLIT UI ----------------
 st.set_page_config(page_title="ClearWrite", page_icon="🖋️", layout="centered")
 
-# ----- CUSTOM CSS FOR MINIMALISTIC YEEZY STYLE -----
+# ----- CUSTOM CSS -----
 st.markdown("""
     <style>
     /* Background */
@@ -50,7 +50,7 @@ st.markdown("""
         font-size: 18px;
         color: #aaaaaa;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     /* Text area */
@@ -61,23 +61,8 @@ st.markdown("""
         font-size: 16px;
         background-color: #111111;
         color: #ffffff;
-    }
-
-    /* Button */
-    div.stButton > button:first-child {
-        background-color: #222222;
-        color: #fffbe6;
-        font-weight: 500;
-        border-radius: 8px;
-        padding: 10px 24px;
-        font-size: 16px;
-        border: 1px solid #333333;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    div.stButton > button:first-child:hover {
-        background-color: #333333;
-        color: #fffbe6;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     /* Simplified text box */
@@ -88,6 +73,7 @@ st.markdown("""
         font-size: 16px;
         color: #ffffff;
         border-radius: 6px;
+        margin-top: 15px;
     }
 
     /* Footer text */
@@ -107,17 +93,21 @@ st.markdown('<div class="subtitle">Paste text below and simplify it instantly.</
 # ----- TEXT INPUT AREA -----
 user_text = st.text_area("", height=200)
 
-# ----- SIMPLIFY BUTTON CENTERED -----
-st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
-if st.button("Simplify Text"):
-    if user_text.strip() == "":
-        st.warning("Please enter some text first.")
-    else:
-        with st.spinner("Simplifying..."):
-            simplified = simplify_text(user_text)
-        st.subheader("Simplified Text")
-        st.success(simplified)
-st.markdown('</div>', unsafe_allow_html=True)
+# ----- CENTERED SIMPLIFY BUTTON USING COLUMNS -----
+col1, col2, col3 = st.columns([1, 1, 0.4])  # make middle column much bigger
+simplified = None
+with col2:
+    if st.button("Simplify Text"):
+        if user_text.strip() == "":
+            st.warning("Please enter some text first.")
+        else:
+            with st.spinner("Simplifying..."):
+                simplified = simplify_text(user_text)
+
+# ----- DISPLAY SIMPLIFIED TEXT CENTERED -----
+if simplified:
+    st.subheader("Simplified Text")
+    st.success(simplified)
 
 # ----- FOOTER -----
 st.markdown('<div class="footer">Made by Vihaan Kalia | Uses Gemini API</div>', unsafe_allow_html=True)
