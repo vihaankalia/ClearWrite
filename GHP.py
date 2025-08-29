@@ -66,14 +66,15 @@ st.markdown("""
     }
 
     /* Simplified text box */
-    .stSuccess {
+    .simplified-box {
         border-left: 4px solid #f5d95e;
-        padding: 10px 15px;
+        padding: 15px;
         background-color: #111111;
         font-size: 16px;
-        color: #ffffff;
+        color: #ffffff;  /* Text color changed to white */
         border-radius: 6px;
         margin-top: 15px;
+        white-space: pre-wrap;  /* Preserve line breaks */
     }
 
     /* Footer text */
@@ -94,7 +95,7 @@ st.markdown('<div class="subtitle">Paste text below and simplify it instantly.</
 user_text = st.text_area("", height=200)
 
 # ----- CENTERED SIMPLIFY BUTTON USING COLUMNS -----
-col1, col2, col3 = st.columns([1, 1, 0.4])  # make middle column much bigger
+col1, col2, col3 = st.columns([1, 1, 0.4])
 simplified = None
 with col2:
     if st.button("Simplify Text"):
@@ -107,7 +108,8 @@ with col2:
 # ----- DISPLAY SIMPLIFIED TEXT CENTERED -----
 if simplified:
     st.subheader("Simplified Text")
-    st.success(simplified)
+    st.markdown(f'<div class="simplified-box">{simplified}</div>', unsafe_allow_html=True)
 
 # ----- FOOTER -----
 st.markdown('<div class="footer">Made by Vihaan Kalia | Uses Gemini API</div>', unsafe_allow_html=True)
+
