@@ -71,10 +71,10 @@ st.markdown("""
         padding: 15px;
         background-color: #111111;
         font-size: 16px;
-        color: #ffffff;  /* Text color changed to white */
+        color: #ffffff;
         border-radius: 6px;
         margin-top: 15px;
-        white-space: pre-wrap;  /* Preserve line breaks */
+        white-space: pre-wrap;
     }
 
     /* Footer text */
@@ -91,19 +91,30 @@ st.markdown("""
 st.markdown('<div class="title">C L E A R W R I T E</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Paste text below and simplify it instantly.</div>', unsafe_allow_html=True)
 
-# ----- TEXT INPUT AREA -----
-user_text = st.text_area("", height=200)
+# ----- INITIALIZE SESSION STATE -----
+if "user_text" not in st.session_state:
+    st.session_state.user_text = ""
 
-# ----- CENTERED SIMPLIFY BUTTON USING COLUMNS -----
-col1, col2, col3 = st.columns([1, 1, 0.4])
+# ----- TEXT INPUT AREA -----
+st.session_state.user_text = st.text_area("", value=st.session_state.user_text, height=200)
+
+# ----- CENTERED SIMPLIFY BUTTON -----
+col1, col2, col3 = st.columns([1.15, 0.6, 1])
 simplified = None
 with col2:
     if st.button("Simplify Text"):
-        if user_text.strip() == "":
+        if st.session_state.user_text.strip() == "":
             st.warning("Please enter some text first.")
         else:
             with st.spinner("Simplifying..."):
-                simplified = simplify_text(user_text)
+                simplified = simplify_text(st.session_state.user_text)
+
+# ----- CLEAR BUTTON IN MANUAL COLUMN (ADJUSTABLE) -----
+# Change col3 to col2 or col4 to shift it left/right
+col1, col2, col3, col4, col5 = st.columns([1.11, 0.4, 0.4, 0.4, 1])
+with col3:
+    if st.button("Clear", key="clear_button"):
+        st.session_state.user_text = ""
 
 # ----- DISPLAY SIMPLIFIED TEXT CENTERED -----
 if simplified:
@@ -112,4 +123,3 @@ if simplified:
 
 # ----- FOOTER -----
 st.markdown('<div class="footer">Made by Vihaan Kalia | Uses Gemini API</div>', unsafe_allow_html=True)
-
