@@ -3,6 +3,7 @@
 
 import streamlit as st
 from google import genai
+import base64
 
 # ---------------- GEMINI CLIENT ----------------
 API_KEY = "AIzaSyBWlShnCteDlZ4JVfk8Oaoci-wxMR08r-w"
@@ -22,82 +23,98 @@ def simplify_text(text):
 # ---------------- STREAMLIT UI ----------------
 st.set_page_config(page_title="ClearWrite", page_icon="🖋️", layout="centered")
 
-# ----- CUSTOM CSS -----
-st.markdown("""
+# ----- EMBED YEEZY FONT -----
+with open("yeezy.ttf", "rb") as f:
+    font_data = f.read()
+    font_base64 = base64.b64encode(font_data).decode()
+
+st.markdown(f"""
 <style>
-/* Background */
-.stApp {
-    background-color: #000000;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
+@font-face {{
+    font-family: 'Yeezy';
+    src: url(data:font/ttf;base64,{font_base64}) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}}
+
+.stApp {{
+    background-color: #000000; /* Dark mode background */
+    font-family: 'Yeezy', Helvetica, Arial, sans-serif;
+}}
 
 /* Title */
-.title {
+.title {{
     font-size: 48px;
     font-weight: 300;
-    color: #fffbe6;
+    color: #ffffff;
     text-align: center;
     letter-spacing: 12px;
     text-transform: uppercase;
     margin-bottom: 0;
-}
+}}
 
 /* Subtitle */
-.subtitle {
+.subtitle {{
     font-size: 18px;
-    color: #aaaaaa;
+    color: #ffffff;
     text-align: center;
-    margin-bottom: 20px;
-}
+    margin-bottom: 30px;
+    font-family: 'Yeezy', Helvetica, Arial, sans-serif;
+}}
 
 /* Text area */
-textarea {
-    border-radius: 8px;
-    border: 1px solid #333333;
-    padding: 15px;
-    font-size: 16px;
-    background-color: #111111;
-    color: #ffffff;
+textarea {{
+    border-radius: 12px;
+    border: none;
+    padding: 18px;
+    font-size: 18px;
+    background-color: #ffffff; /* Always white */
+    color: #000000; /* Black text */
     width: 100%;
     box-sizing: border-box;
-}
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    font-family: 'Yeezy', Helvetica, Arial, sans-serif;
+}}
 
 /* Simplified text box */
-.simplified-box {
-    border-left: 4px solid #f5d95e;
-    padding: 15px;
-    background-color: #111111;
-    font-size: 16px;
-    color: #ffffff;
-    border-radius: 6px;
-    margin-top: 15px;
+.simplified-box {{
+    border-left: 6px solid #000000;
+    padding: 18px;
+    background-color: #ffffff; /* Always white */
+    font-size: 18px;
+    color: #000000;
+    border-radius: 12px;
+    margin-top: 20px;
     white-space: pre-wrap;
-}
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    font-family: 'Yeezy', Helvetica, Arial, sans-serif;
+}}
 
 /* Footer */
-.footer {
+.footer {{
     font-size: 12px;
-    color: #777777;
+    color: #aaaaaa;
     text-align: center;
     margin-top: 40px;
-}
+}}
 
-/* Small copy button */
-.copy-btn {
-    background-color: #5a7d9a; /* grayish-blue */
-    color: #ffffff;
-    border: none;
-    padding: 6px 18px;
-    border-radius: 6px;
-    font-size: 14px;
+/* Simplify Button */
+.stButton>button {{
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 12px;
+    padding: 10px 30px;
+    font-size: 16px;
     font-weight: 500;
-    cursor: pointer;
-    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     transition: all 0.2s ease;
-}
-.copy-btn:hover {
-    background-color: #49657a;
-}
+    cursor: pointer;
+    font-family: 'Yeezy', Helvetica, Arial, sans-serif;
+}}
+.stButton>button:hover {{
+    opacity: 0.85;
+}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -110,10 +127,10 @@ if "user_text" not in st.session_state:
     st.session_state.user_text = ""
 
 # ----- TEXT INPUT AREA -----
-st.session_state.user_text = st.text_area("", value=st.session_state.user_text, height=200)
+st.session_state.user_text = st.text_area("", value=st.session_state.user_text, height=220)
 
 # ----- CENTERED SIMPLIFY BUTTON -----
-col1, col2, col3 = st.columns([1.15, 0.6, 1])
+col1, col2, col3 = st.columns([1.5, 1, 1.5])
 simplified = None
 with col2:
     if st.button("Simplify Text"):
@@ -130,4 +147,3 @@ if simplified:
 
 # ----- FOOTER -----
 st.markdown('<div class="footer">Made by Vihaan Kalia | Uses Gemini API</div>', unsafe_allow_html=True)
-
