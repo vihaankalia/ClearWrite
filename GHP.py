@@ -3,7 +3,7 @@ import requests
 import base64
 
 # ---------------- OPENROUTER CONFIG ----------------
-API_KEY = "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"
+API_KEY = "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"
 MODEL = "google/gemini-2.5-flash-preview-09-2025"
 
 def simplify_text(text):
@@ -154,4 +154,5 @@ if simplified:
 
 # ----- FOOTER -----
 st.markdown('<div class="footer">Made by Vihaan Kalia</div>', unsafe_allow_html=True)
+
 
