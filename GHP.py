@@ -6,19 +6,22 @@ from google import genai
 import base64
 
 # ---------------- GEMINI CLIENT ----------------
-API_KEY = "AIzaSyDrFIwvst3LilQjmI2AfCvlGsP31Q-LVC4"
+API_KEY = "YOUR_API_KEY_HERE"  # replace with your real key
 client = genai.Client(api_key=API_KEY)
 
 def simplify_text(text):
     """
     Send text to Gemini API to simplify.
     """
-    prompt = f"Simplify this text so it is clear and easy to read:\n\n{text}"
-    response = client.models.generate_content(
-        model="gemini-1.5-flash",
-        contents=prompt
-    )
-    return getattr(response, "text", getattr(response, "output_text", "Error: no text returned"))
+    try:
+        prompt = f"Simplify this text so it is clear and easy to read:\n\n{text}"
+        response = client.models.generate_content(
+            model="gemini-1.5-t",  # fixed: valid model
+            contents=prompt
+        )
+        return getattr(response, "text", getattr(response, "output_text", "Error: no text returned"))
+    except Exception as e:
+        return f"Error simplifying text: {e}"
 
 # ---------------- STREAMLIT UI ----------------
 st.set_page_config(page_title="ClearWrite", page_icon="🖋️", layout="centered")
