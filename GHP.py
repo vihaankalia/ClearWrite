@@ -1,27 +1,37 @@
-# -------- Install first --------
-# pip install streamlit google-genai
-
 import streamlit as st
-from google import genai
+import requests
 import base64
 
-# ---------------- GEMINI CLIENT ----------------
-API_KEY = "AIzaSyDrFIwvst3LilQjmI2AfCvlGsP31Q-LVC4"  # replace with your real key
-client = genai.Client(api_key=API_KEY)
+# ---------------- OPENROUTER CONFIG ----------------
+API_KEY = "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"
+MODEL = "google/gemini-2.5-flash-preview-09-2025"
 
 def simplify_text(text):
     """
-    Send text to Gemini API to simplify.
+    Send text to OpenRouter API using Gemini 2.5 Flash Preview to simplify.
     """
     try:
-        prompt = f"Simplify this text so it is clear and easy to read:\n\n{text}"
-        response = client.models.generate_content(
-            model="gemini-1.5-t",  # fixed: valid model
-            contents=prompt
-        )
-        return getattr(response, "text", getattr(response, "output_text", "Error: no text returned"))
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json",
+        }
+
+        payload = {
+            "model": MODEL,
+            "messages": [
+                {"role": "user", "content": f"Simplify this text so it is clear and easy to read:\n\n{text}"}
+            ]
+        }
+
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+
+        if response.status_code != 200:
+            return f"Error simplifying text: {response.status_code} - {response.text}"
+
+        return response.json()["choices"][0]["message"]["content"]
+
     except Exception as e:
-        return f"Error simplifying text: {e}"
+        return f"Exception simplifying text: {e}"
 
 # ---------------- STREAMLIT UI ----------------
 st.set_page_config(page_title="ClearWrite", page_icon="🖋️", layout="centered")
@@ -41,11 +51,10 @@ st.markdown(f"""
 }}
 
 .stApp {{
-    background-color: #000000; /* Dark mode background */
+    background-color: #000000;
     font-family: 'Yeezy', Helvetica, Arial, sans-serif;
 }}
 
-/* Title */
 .title {{
     font-size: 48px;
     font-weight: 300;
@@ -56,7 +65,6 @@ st.markdown(f"""
     margin-bottom: 0;
 }}
 
-/* Subtitle */
 .subtitle {{
     font-size: 18px;
     color: #ffffff;
@@ -65,25 +73,23 @@ st.markdown(f"""
     font-family: 'Yeezy', Helvetica, Arial, sans-serif;
 }}
 
-/* Text area */
 textarea {{
     border-radius: 12px;
     border: none;
     padding: 18px;
     font-size: 18px;
-    background-color: #ffffff; /* Always white */
-    color: #000000; /* Black text */
+    background-color: #ffffff;
+    color: #000000;
     width: 100%;
     box-sizing: border-box;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     font-family: 'Yeezy', Helvetica, Arial, sans-serif;
 }}
 
-/* Simplified text box */
 .simplified-box {{
     border-left: 6px solid #000000;
     padding: 18px;
-    background-color: #ffffff; /* Always white */
+    background-color: #ffffff;
     font-size: 18px;
     color: #000000;
     border-radius: 12px;
@@ -93,7 +99,6 @@ textarea {{
     font-family: 'Yeezy', Helvetica, Arial, sans-serif;
 }}
 
-/* Footer */
 .footer {{
     font-size: 12px;
     color: #aaaaaa;
@@ -101,7 +106,6 @@ textarea {{
     margin-top: 40px;
 }}
 
-/* Simplify Button */
 .stButton>button {{
     background-color: #ffffff;
     color: #000000;
@@ -149,6 +153,5 @@ if simplified:
     st.markdown(f'<div class="simplified-box">{simplified}</div>', unsafe_allow_html=True)
 
 # ----- FOOTER -----
-st.markdown('<div class="footer">Made by Vihaan Kalia | Uses Gemini API</div>', unsafe_allow_html=True)
-
+st.markdown('<div class="footer">Made by Vihaan Kalia</div>', unsafe_allow_html=True)
 
