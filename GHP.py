@@ -6,7 +6,7 @@ from google import genai
 import base64
 
 # ---------------- GEMINI CLIENT ----------------
-API_KEY = "AIzaSyBWlShnCteDlZ4JVfk8Oaoci-wxMR08r-w"
+API_KEY = "AIzaSyDrFIwvst3LilQjmI2AfCvlGsP31Q-LVC4"
 client = genai.Client(api_key=API_KEY)
 
 def simplify_text(text):
@@ -147,3 +147,4 @@ if simplified:
 
 # ----- FOOTER -----
 st.markdown('<div class="footer">Made by Vihaan Kalia | Uses Gemini API</div>', unsafe_allow_html=True)
+
