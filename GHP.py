@@ -2,36 +2,42 @@ import streamlit as st
 import requests
 import base64
 
-# ---------------- OPENROUTER CONFIG ----------------
-API_KEY = "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"
-MODEL = "google/gemini-2.5-flash-preview-09-2025"
+# ---------------- GEMINI CONFIG ----------------
+API_KEY = "AIzaSyDrFIwvst3LilQjmI2AfCvlGsP31Q-LVC4"
+MODEL = "gemini-2.5-flash"   # direct Gemini Flash model
 
 def simplify_text(text):
     """
-    Send text to OpenRouter API using Gemini 2.5 Flash Preview to simplify.
+    Send text to Gemini API to simplify.
     """
     try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={API_KEY}"
+
         headers = {
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
         }
 
         payload = {
-            "model": MODEL,
-            "messages": [
-                {"role": "user", "content": f"Simplify this text so it is clear and easy to read:\n\n{text}"}
+            "contents": [
+                {
+                    "parts": [
+                        {"text": f"Simplify this text so it is clear and easy to read:\n\n{text}"}
+                    ]
+                }
             ]
         }
 
-        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload)
 
         if response.status_code != 200:
             return f"Error simplifying text: {response.status_code} - {response.text}"
 
-        return response.json()["choices"][0]["message"]["content"]
+        data = response.json()
+        return data["candidates"][0]["content"]["parts"][0]["text"]
 
     except Exception as e:
         return f"Exception simplifying text: {e}"
+
 
 # ---------------- STREAMLIT UI ----------------
 st.set_page_config(page_title="ClearWrite", page_icon="🖋️", layout="centered")
@@ -154,5 +160,3 @@ if simplified:
 
 # ----- FOOTER -----
 st.markdown('<div class="footer">Made by Vihaan Kalia</div>', unsafe_allow_html=True)
-
-
